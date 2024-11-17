@@ -6,7 +6,7 @@ def analyze_podcast(audio_file):
     try:
         config = aai.TranscriptionConfig(
             speaker_labels=True,
-            summarization=True,
+            auto_chapters=True,
             language_detection=True
         )
         transcriber = aai.Transcriber(config=config)

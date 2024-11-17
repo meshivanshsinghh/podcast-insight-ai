@@ -33,6 +33,10 @@ class TranscriptCache:
                 if 'utterances' in transcript_data:
                     transcript_data['utterances'] = json.loads(
                         transcript_data['utterances'])
+                if 'chapters' in transcript_data:
+                    transcript_data['chapters'] = json.loads(
+                        transcript_data['chapters']
+                    )
                 return transcript_data
             return None
         except Exception:
@@ -41,19 +45,28 @@ class TranscriptCache:
     def save_transcript(self, video_url: str, transcript: aai.Transcript):
         """Save transcript to cache"""
         video_id = self._generate_video_id(video_url)
+        chapters_data = []
+        if transcript.chapters:
+            chapters_data = [{
+                'headline': ch.headline,
+                'start': ch.start,
+                'end': ch.end,
+                'summary': ch.summary,
+            } for ch in transcript.chapters]
         transcript_data = {
-            'text': transcript.text,
+            'text': transcript.text or "",
             'utterances': json.dumps([{
                 'speaker': u.speaker,
                 'start': u.start,
                 'end': u.end,
-                'text': u.text
+                'text': u.text or ""
             } for u in transcript.utterances]),
-            'summary': transcript.summary
+            'summary': transcript.summary or "",
+            'chapters': json.dumps(chapters_data)
         }
 
         self.collection.upsert(
             ids=[video_id],
             metadatas=[transcript_data],
-            documents=[transcript.text]
+            documents=[transcript.text or ""]
         )

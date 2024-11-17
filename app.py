@@ -8,6 +8,7 @@ from utils import (
     display_analytics,
     cleanup_temp_file
 )
+import json
 from utils.transcript_cache import TranscriptCache
 
 load_dotenv()
@@ -32,6 +33,10 @@ def process_podcast(youtube_url, transcript_cache):
                 self.utterances = [type('Utterance', (), u)
                                    for u in data['utterances']]
                 self.summary = data['summary']
+                if 'chapters' in data and len(data['chapters']) > 1:
+                    chapters_data = json.loads(data['chapters'])
+                    self.chapters = [type('Chapters', (), ch)
+                                     for ch in chapters_data]
         return CachedTranscript(cached_transcript)
 
     # If not in cache, process the podcast

@@ -11,23 +11,44 @@ def display_speaker_analysis(transcript: aai.Transcript) -> None:
         speaker_times = {}
         for utterance in transcript.utterances:
             speaker = f"Speaker {utterance.speaker}"
-            duration = utterance.end - utterance.start
+            duration = utterance.end - utterance.start / 1000
             speaker_times[speaker] = speaker_times.get(speaker, 0) + duration
 
         df = pd.DataFrame({
             'Speaker': list(speaker_times.keys()),
-            'Speaking Time (seconds)': list(speaker_times.values())
+            'Speaking Time (minutes)': [round(t/60, 2) for t in speaker_times.values()]
         })
 
-        fig = px.pie(df, values='Speaking Time (seconds)',
-                     names='Speaker', title='Speaker Distribution')
+        fig = px.pie(df,
+                     values='Speaking Time (minutes)',
+                     names='Speaker',
+                     title='Speaker Distribution',
+                     hover_data={'Speaking Time (minutes)': ':.2f'})
         st.plotly_chart(fig)
 
 
 def display_key_insights(transcript: aai.Transcript) -> None:
     """Display key insights"""
     if transcript.summary:
+        st.header("Summary")
         st.write(transcript.summary)
+
+    if transcript.chapters:
+        st.header("Chapter Breakdown")
+        for i, chapter in enumerate(transcript.chapters, 1):
+            # Convert milliseconds to minutes and seconds
+            start_mins = int(chapter.start / 60000)
+            start_secs = int((chapter.start % 60000) / 1000)
+            end_mins = int(chapter.end / 60000)
+            end_secs = int((chapter.end % 60000) / 1000)
+
+            st.subheader(f"Chapter {i}: {chapter.headline}")
+            st.text(
+                f"Time: {start_mins:02d}:{start_secs:02d} - {end_mins:02d}:{end_secs:02d}"
+            )
+            if chapter.summary:
+                st.write(f"**Summary:** {chapter.summary}")
+            st.divider()  # Add visual separation between chapters
 
 
 def display_timeline(transcript: aai.Transcript) -> None:
@@ -42,7 +63,9 @@ def display_timeline(transcript: aai.Transcript) -> None:
             'Speaker': f'Speaker {utterance.speaker}',
             'Start': utterance.start / 1000,  # Convert to seconds
             'End': utterance.end / 1000,
-            'Text': utterance.text
+            'Text': utterance.text,
+            # duration in seconds
+            'Duration': (utterance.end - utterance.start) / 1000
         })
 
     df = pd.DataFrame(timeline_data)
@@ -60,10 +83,13 @@ def display_timeline(transcript: aai.Transcript) -> None:
             y=[speaker] * len(speaker_df),
             orientation='h',
             base=speaker_df['Start'],
+            text=speaker_df['Text'],
+            customdata=speaker_df[['Start', 'End', 'Duration']],
             hovertemplate=(
-                f"<b>{speaker}</b><br>" +
-                "Time: %{base:.1f}s - %{base + x:.1f}s<br>" +
-                "Duration: %{x:.1f}s<br>" +
+                "<b>%{y}</b><br>" +
+                "Start: %{customdata[0]:.1f}s<br>" +
+                "End: %{customdata[1]:.1f}s<br>" +
+                "Duration: %{customdata[2]:.1f}s<br>" +
                 "<extra></extra>"
             )
         ))
