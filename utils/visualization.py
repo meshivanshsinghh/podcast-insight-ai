@@ -1,8 +1,10 @@
+# visualization
 import streamlit as st
 import plotly.express as px
 import plotly.graph_objects as go
 import pandas as pd
 import assemblyai as aai
+from utils import display_advanced_analytics
 
 
 def display_speaker_analysis(transcript: aai.Transcript) -> None:
@@ -11,8 +13,9 @@ def display_speaker_analysis(transcript: aai.Transcript) -> None:
         speaker_times = {}
         for utterance in transcript.utterances:
             speaker = f"Speaker {utterance.speaker}"
-            duration = utterance.end - utterance.start / 1000
-            speaker_times[speaker] = speaker_times.get(speaker, 0) + duration
+            duration = (utterance.end - utterance.start)
+            speaker_times[speaker] = speaker_times.get(
+                speaker, 0) + (duration/1000)
 
         df = pd.DataFrame({
             'Speaker': list(speaker_times.keys()),
@@ -114,8 +117,8 @@ def display_analytics(transcript: aai.Transcript) -> None:
     if not transcript:
         return
 
-    tab1, tab2, tab3 = st.tabs(
-        ['Timeline', 'Speaker Analysis', 'Key Insights'])
+    tab1, tab2, tab3, tab4 = st.tabs(
+        ['Timeline', 'Speaker Analysis', 'Advanced Analytics', 'Key Insights'])
 
     with tab1:
         st.subheader("Interactive Timeline")
@@ -126,5 +129,9 @@ def display_analytics(transcript: aai.Transcript) -> None:
         display_speaker_analysis(transcript)
 
     with tab3:
+        st.subheader("Advanced Analytics")
+        display_advanced_analytics(transcript)
+
+    with tab4:
         st.subheader("Key Insights")
         display_key_insights(transcript)

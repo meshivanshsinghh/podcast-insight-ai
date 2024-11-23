@@ -1,0 +1,19 @@
+1.Entity detection in assembly ai
+So basically entity detection model helps in automatically identifying and categorize key information 
+in transcribed audio content. Like Names of people, organisations, addresses, phone numbers, etc.
+
+2. Content moderation
+We can detect inappropriate content in audio files and make sure the content is safe for all audiences. 
+- the model pinpoints sensitive discussions in spoken data and their severity. 
+- maybe showcase that we can detect before making the podcast public for whatever data is being said
+is not harmful.
+- add mechanism to upload podcast file.
+
+3. Sentiment analysis 
+We can detect the sentiment of each spoken sentence in transcript text. Use sentiment analysis to get a detailed 
+analysis of the positive, negative or neutral conveyed in the audio, along with a confidence score for each
+result 
+- maybe we show the data in visual representation.
+
+4. local caching mechanism also available->try to also match the caching for files that are uploaded as mp4
+not from url

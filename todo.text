@@ -1,6 +1,66 @@
 - speaker should be classified with their name, who they are in speaker analysis on pie chart. 
-- speaker seconds should be shown with minutes also
+- in conversation timeline, make horizontal scrolling and remove the text in it. not needed.
+- in pie chart we should show like how many hours if it crossed more than 1 hour else minutes.
+- adding audio segments for user to play for chapter timestamp. (kind of storing audio in chunks)
+- todo: 
+    - topic clouds 
+    - click to jump to specific moments 
+    - yellow highlights for key moments 
+    - quality metrics (clear speech percentage)
+    - engagement tracking 
+    - natural conversation flow analysis 
+    - topic frequency visualization 
+    - topic word clouds 
+    - sophisticated chapter makers 
 
 
-- in conversation timeline
-- make horizonatl scrolling and remove the text in it. not needed
+add more 
+    1. Entity detection and topic detecetion
+    - entity detection - people, places, organization 
+    - topic distrubution across podcast 
+    - timeline markers for important entity mentions
+    2. sentiment analysis integration 
+    - sentiment flow throughout the podcast 
+    - emotional highlights for each speaker 
+    - key moments of high positive/negative sentiment 
+i
+    3. content moderation 
+    - add content moderation 
+    - content safety score dashboard 
+    5. advanced features 
+    - filler word detection 
+    - speaking pace 
+    - talk-to-listen ration between speakers 
+    - detect and highlight cross-talk moments 
+    6. interactive feature 
+    - clickable timestamps that play audio segments 
+    - word cloud for each speaker's most used terms 
+    - filter to focus on speacific topic/speakers 
+    - search function for transcript 
+    7. export
+    - report 
+    - entire transcript 
+    - social media snippets from top moments 
+    8. chapter analysis 
+    - chapter summaries using LeMUR 
+    - chapter sentiment analysis 
+    9. speaker analytics
+    - speaking style - pace, tone, clarity 
+    - interruption detection and analysis 
+    - speaker engagement metrics 
+    speaking time distrubution trends 
+    10. quality metrics dashboard 
+    - audio quality score 
+    - speech clarity score 
+    - background noise analysis 
+    - speaking pace analysis 
+    
+    11. keep a history of all previous podcast cache from chroma db
+    12. fix entity detection mechanism.
+    
+
+what do you think are some of the more things that 
+I can implement that can stand my chance out for winning in hackathon. 
+Look at assembly ai documentation and tell me
+
+

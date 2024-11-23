@@ -8,36 +8,38 @@ from utils import (
     display_analytics,
     cleanup_temp_file
 )
-import json
-from utils.transcript_cache import TranscriptCache
+# import json
+# from utils.transcript_cache import TranscriptCache
 
 load_dotenv()
 
 aai.settings.api_key = os.getenv('ASSEMBLYAI_API_KEY')
 
 
-@st.cache_resource
-def get_transcript_cache():
-    return TranscriptCache()
+# @st.cache_resource
+# def get_transcript_cache():
+#     return TranscriptCache()
 
 
-def process_podcast(youtube_url, transcript_cache):
+def process_podcast(youtube_url):
     """Process podcast and return transcript"""
-    cached_transcript = transcript_cache.get_transcript(youtube_url)
-    if cached_transcript:
-        st.success("Found cached transcript! Using cached version.")
+    # cached_transcript = transcript_cache.get_transcript(youtube_url)
+    # if cached_transcript:
+    #     st.success("Found cached transcript! Using cached version.")
 
-        class CachedTranscript:
-            def __init__(self, data):
-                self.text = data['text']
-                self.utterances = [type('Utterance', (), u)
-                                   for u in data['utterances']]
-                self.summary = data['summary']
-                if 'chapters' in data and len(data['chapters']) > 1:
-                    chapters_data = json.loads(data['chapters'])
-                    self.chapters = [type('Chapters', (), ch)
-                                     for ch in chapters_data]
-        return CachedTranscript(cached_transcript)
+    #     class CachedTranscript:
+    #         def __init__(self, data):
+    #             self.text = data['text']
+    #             self.utterances = [type('Utterance', (), u)
+    #                                for u in data['utterances']]
+    #             self.summary = data['summary']
+    #             self.entities = data.get('entities', [])
+    #             self.sentiment = data.get('sentiment', None)
+    #             if 'chapters' in data and len(data['chapters']) > 1:
+    #                 chapters_data = json.loads(data['chapters'])
+    #                 self.chapters = [type('Chapters', (), ch)
+    #                                  for ch in chapters_data]
+    #     return CachedTranscript(cached_transcript)
 
     # If not in cache, process the podcast
     audio_file = download_youtube_audio(youtube_url)
@@ -46,7 +48,7 @@ def process_podcast(youtube_url, transcript_cache):
             transcript = analyze_podcast(audio_file)
             if transcript:
                 # Save to cache
-                transcript_cache.save_transcript(youtube_url, transcript)
+                # transcript_cache.save_transcript(youtube_url, transcript)
                 return transcript
         finally:
             cleanup_temp_file(audio_file)
@@ -58,9 +60,9 @@ def main():
     st.subheader("AI-Powered Podcast Analytics Platform")
 
     os.makedirs('temp', exist_ok=True)
-    os.makedirs('transcript_cache', exist_ok=True)
+    # os.makedirs('transcript_cache', exist_ok=True)
 
-    transcript_cache = get_transcript_cache()
+    # transcript_cache = get_transcript_cache()
     processed_transcript = None
 
     with st.form("podcast_form"):
@@ -76,9 +78,14 @@ def main():
         with st.spinner("Processing podcast..."):
             try:
                 processed_transcript = process_podcast(
-                    youtube_url, transcript_cache)
+                    youtube_url)
+                if processed_transcript is None:
+                    st.error("Failed to process the podcast. Please try again.")
+                else:
+                    st.success("Podcast processed successfully!")
             except Exception as e:
                 st.error(f"Error processing podcast: {str(e)}")
+                st.error("Please make sure the URL is valid and try again.")
 
     # Display results outside the form
     if processed_transcript:
